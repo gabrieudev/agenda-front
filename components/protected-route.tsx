@@ -9,7 +9,9 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const checkAuthentication = async () => {
-      if (!authService.isAuthenticated()) {
+      const isAuthenticated = await authService.isAuthenticated();
+
+      if (!isAuthenticated) {
         router.push("/auth/signin");
       }
     };
