@@ -111,12 +111,12 @@ export default function SignUpPage() {
         </form>
 
         <p className="text-center text-sm text-muted-foreground">
-          J tem uma conta?{" "}
+          Já tem uma conta?{" "}
           <Link
             href="/auth/signin"
             className="underline underline-offset-4 hover:text-primary"
           >
-            Fa a o login
+            Faça o login
           </Link>
         </p>
       </div>

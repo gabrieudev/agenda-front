@@ -80,7 +80,7 @@ export default function SignInPage() {
         </form>
 
         <p className="text-center text-sm text-muted-foreground">
-          N o tem uma conta?{" "}
+          Não tem uma conta?{" "}
           <Link
             href="/auth/signup"
             className="underline underline-offset-4 hover:text-primary"
