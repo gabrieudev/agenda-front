@@ -11,7 +11,6 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const checkAuthentication = async () => {
       if (!authService.isAuthenticated()) {
         router.push("/auth/signin");
-        router.refresh();
       }
     };
 
