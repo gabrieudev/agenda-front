@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Home, Bell } from "lucide-react";
+import { Menu, Home, Bell, Bolt } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -26,11 +26,16 @@ const routes = [
     label: "Notificações",
     icon: Bell,
   },
+  {
+    href: "/adminPanel",
+    label: "Painel administrativo",
+    icon: Bolt
+  }
 ];
 
 export function SiteHeader() {
   const pathname = usePathname();
-
+  
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">

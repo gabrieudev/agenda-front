@@ -1,5 +1,6 @@
 import { authService } from "@/lib/auth";
 import dotenv from "dotenv";
+import { number } from "zod";
 
 dotenv.config();
 
@@ -25,6 +26,12 @@ async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
   }
 
   if (response.status === 204) {
+    return null;
+  }
+
+  //GAMBIARRA PARA CONTORNAR FALTA DE JSON NA RESPONSE
+  const contentType = response.headers.get("content-type");
+  if (!contentType || !contentType.includes("application/json")) {
     return null;
   }
 
@@ -102,7 +109,97 @@ export const api = {
   // Users
   getMe: () => fetchWithAuth("/users/me"),
 
-  // Status and Categories
+  getUsers: (page: number, size: number, name: string) =>
+    fetchWithAuth(`/users?page=${page}&size=${size}&param=${encodeURIComponent(name)}`, {
+      method: "GET",
+    }),
+  
+  updateUser: (data:Partial<User>) => 
+    fetchWithAuth("/users", {
+      method: "PUT",
+      body: JSON.stringify(data)
+    }),
+
+  deleteUser: (idUser: string) => 
+    fetchWithAuth(`/users/${idUser}`,{
+      method: "DELETE"
+    }),
+
+  addRoleToUser: (data: Role[], userId: string) => 
+    fetchWithAuth(`/users/${userId}/roles`, {
+      method: "POST",
+      body: JSON.stringify(data)
+    }),
+
+  removeRoleFromUser: (data: Role[], userId: string) => 
+    fetchWithAuth(`/users/${userId}/roles`, {
+      method: "DELETE",
+      body: JSON.stringify(data)
+    }),
+  
+  // Status 
   getStatuses: () => fetchWithAuth("/statuses"),
+
+  createStatus: (data: Partial<Status>) => fetchWithAuth("/statuses", {
+    method: "POST",
+    body: JSON.stringify(data)
+  }),
+
+  updateStatus: (data: Status) => fetchWithAuth("/statuses", {
+    method: "PUT",
+    body: JSON.stringify(data)
+  }),
+
+  deleteStatus: (statusId: string) => fetchWithAuth(`/statuses/${statusId}`, {
+    method: "DELETE"
+  }),
+
+  
+  //Categories
   getCategories: () => fetchWithAuth("/commitment-categories"),
+
+  createCategory: (data: Partial<CommitmentCategory>) => 
+    fetchWithAuth(`/commitment-categories`, {
+      method: "POST",
+      body: JSON.stringify(data)
+    }),
+
+  updateCategory: (data: Partial<CommitmentCategory>) => 
+    fetchWithAuth(`/commitment-categories`, {
+      method: "PUT",
+      body: JSON.stringify(data)
+    }),
+  
+  deleteCategory: (categoryId: string) => 
+    fetchWithAuth(`/commitment-categories/${categoryId}`, {
+      method: "DELETE",
+    }),
+
+  //Roles
+
+  getRoles: (page: number, size: number, userId?: string) => {
+    const params = new URLSearchParams({ page: String(page), size: String(size) });
+    if (userId) params.append("userId", userId);
+
+    return fetchWithAuth(`/roles?${params.toString()}`);
+
+  },
+
+  createRole: (data: Partial<Role>) => 
+    fetchWithAuth("/roles", {
+      method: "POST",
+      body: JSON.stringify(data)
+  }),
+
+  updateRole: (data: Partial<Role>) =>
+    fetchWithAuth("/roles", {
+      method: "PUT",
+      body: JSON.stringify(data)
+    }),
+
+  deleteRole: (roleId: string) => 
+    fetchWithAuth(`/roles/${roleId}`, {
+      method: "DELETE"
+  })
+  
 };

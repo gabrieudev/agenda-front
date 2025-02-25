@@ -6,8 +6,8 @@ declare global {
     firstName: string;
     lastName: string;
     email: string;
-    password: string;
-    createdAt: Date;
+    password?: string;
+    createdAt?: Date;
     updatedAt: Date;
   }
 
