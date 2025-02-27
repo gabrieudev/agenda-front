@@ -81,7 +81,7 @@ export default function AdminUserConfig({
           description: "Erro ao carregar usuários",
         })
       );
-  }, [page, size, searchParam]);
+  }, [page, size, searchParam, setUsers]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchParam(e.target.value);
@@ -120,7 +120,7 @@ export default function AdminUserConfig({
   const addRole = (role: Role) => {
     if (!userRoles.some((r) => r.id === role.id)) {
       api
-        .addRoleToUser([role], newUser.id)
+        .assignRole([role], newUser.id)
         .then(() => setUserRoles([...userRoles, role]));
     }
     setRoleQuery("");
@@ -128,7 +128,7 @@ export default function AdminUserConfig({
 
   const removeRole = (role: Role) => {
     api
-      .removeRoleFromUser([role], newUser.id)
+      .unassignRole([role], newUser.id)
       .then(() => setUserRoles(userRoles.filter((r) => r.id !== role.id)))
       .catch(() =>
         toast({
@@ -353,7 +353,8 @@ export default function AdminUserConfig({
           <AlertDialogHeader>
             <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta ação não pode ser revertida. O usuário será removido permanentemente.
+              Esta ação não pode ser revertida. O usuário será removido
+              permanentemente.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

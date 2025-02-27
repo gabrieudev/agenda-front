@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
-import AdminCategoryConfig from "@/components/adminPanel/AdminCategoryConfig";
-import AdminUserConfig from "@/components/adminPanel/AdminUserConfig";
+import AdminCategoryConfig from "@/components/adminPanel/admin-category-config";
+import AdminUserConfig from "@/components/adminPanel/admin-user-config";
 import { ProtectedRoute } from "@/components/protected-route";
 import { toast } from "@/hooks/use-toast";
-import AdminRoleConfig from "@/components/adminPanel/AdminRoleConfig";
-import AdminStatusConfig from "@/components/adminPanel/AdminStatusConfig";
+import AdminRoleConfig from "@/components/adminPanel/admin-role-config";
+import AdminStatusConfig from "@/components/adminPanel/admin-status-config";
 
 export default function SettingsPage() {
   
