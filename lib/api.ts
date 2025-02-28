@@ -208,4 +208,35 @@ export const api = {
     fetchWithAuth(`/roles/${roleId}`, {
       method: "DELETE",
     }),
+
+  //Notifications
+  
+  getNotifications: (commitmentId: string, page: number, size: number) => {
+    const params = new URLSearchParams({
+      commitmentId: String(commitmentId),
+      page: String(page),
+      size: String(size)
+    });
+    
+    return fetchWithAuth(`/notifications?${params.toString()}`);
+  },
+
+  createNotification: (data: Partial<Notification>) => 
+    fetchWithAuth("/notifications", {
+      method: "POST",
+      body: JSON.stringify(data)
+    }),
+
+  updateNotification: (data: Partial<Notification>) =>
+    fetchWithAuth("/notifications", {
+      method: "PUT",
+      body: JSON.stringify(data)
+    }),
+
+  deleteNotification: (notificationId: string) => 
+    fetchWithAuth(`/notifications/${notificationId}`, {
+      method: "DELETE"
+    })
+
+
 };

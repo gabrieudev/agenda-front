@@ -4,6 +4,7 @@ import { columns } from "@/components/commitments/columns";
 import { CommitmentDialog } from "@/components/commitments/commitment-dialog";
 import { CommitmentFilters } from "@/components/commitments/commitment-filters";
 import { DataTable } from "@/components/commitments/data-table";
+import NotificationsDialog from "@/components/commitments/notifications-dialog";
 import { ProtectedRoute } from "@/components/protected-route";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -23,9 +24,12 @@ export default function DashboardPage() {
   const [selectedStatusId, setSelectedStatusId] = useState<string>();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isNotificationDialoOpen, setIsNotificationDialoOpen] = useState(false);
   const [selectedCommitment, setSelectedCommitment] =
     useState<Commitment | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [selectedCommitmentForNotification, setSelectedCommitmentForNotification] = useState<Commitment | null>(null);
 
   useEffect(() => {
     api
@@ -156,6 +160,25 @@ export default function DashboardPage() {
     }
   };
 
+  const fetchNotifications = async(commitment: Commitment) => {
+    try {
+      await api.getNotifications(commitment.id, page, pageSize)
+        .then((response) => setNotifications(response.content))
+    } catch {
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Erro ao carregar notificações",
+      });
+    }
+  };
+
+  const refreshNotifications = () => {
+    if (selectedCommitmentForNotification) {
+      fetchNotifications(selectedCommitmentForNotification)
+    }
+  }
+
   const fetchCommitments = useCallback(() => {
     if (!user) return;
 
@@ -232,6 +255,11 @@ export default function DashboardPage() {
                 onDelete: handleDelete,
                 onComplete: handleComplete,
                 onInProgress: handleInProgress,
+                onNotification: (commitment) => {
+                  setSelectedCommitmentForNotification(commitment)
+                  fetchNotifications(commitment)
+                  setIsNotificationDialoOpen(true);
+                }
               })}
               data={commitments?.content ?? []}
               pageCount={commitments?.totalPages ?? 0}
@@ -251,6 +279,15 @@ export default function DashboardPage() {
           categories={categories}
           onSubmit={selectedCommitment ? handleUpdate : handleCreate}
         />
+
+        <NotificationsDialog 
+          open={isNotificationDialoOpen} 
+          onOpenChange={setIsNotificationDialoOpen} 
+          notifications={notifications}
+          commitment={selectedCommitmentForNotification}
+          refreshNotifications={refreshNotifications}
+        />
+
       </div>
     </ProtectedRoute>
   );

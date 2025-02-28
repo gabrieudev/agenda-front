@@ -73,4 +73,11 @@ declare global {
     completedCommitments: Commitment[];
     completedTasks: Task[];
   }
+
+  export interface Notification {
+    id: string,
+    message: string,
+    commitment: Commitment,
+    dueDate: Date
+  }
 }

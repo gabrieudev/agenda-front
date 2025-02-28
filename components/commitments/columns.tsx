@@ -11,7 +11,7 @@ import {
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { MoreHorizontal, Pencil, RefreshCcw, Trash2 } from "lucide-react";
+import { Bell, MoreHorizontal, Pencil, RefreshCcw, Trash2 } from "lucide-react";
 import { TasksDialog } from "./tasks-dialog";
 
 interface ColumnsOptions {
@@ -20,6 +20,7 @@ interface ColumnsOptions {
   onDelete: (id: string) => void;
   onComplete: (commitment: Commitment) => void;
   onInProgress: (commitment: Commitment) => void;
+  onNotification: (commmitment: Commitment) => void;
 }
 
 export const columns = ({
@@ -28,6 +29,7 @@ export const columns = ({
   onDelete,
   onComplete,
   onInProgress,
+  onNotification
 }: ColumnsOptions): ColumnDef<Commitment>[] => [
   {
     accessorKey: "title",
@@ -105,6 +107,10 @@ export const columns = ({
               >
                 <RefreshCcw className="mr-2 h-4 w-4" />
                 {isConcluded ? "Em andamento" : "Concluir"}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onNotification(commitment)}>
+                <Bell className="mr-2 h-4 w-4" />
+                Notificacões
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-destructive"
