@@ -30,19 +30,7 @@ export default function ReportChart({
   onStartDateChange,
   onEndDateChange,
 }: ReportChartProps) {
-  // const [startDate, setStartDate] = useState<string>("");
-  // const [endDate, setEndDate] = useState<string>("");
-
-  // const filterByDate = (items: { createdAt: Date }[]) => {
-  //   return items.filter((item) => {
-  //     const itemDate = new Date(item.createdAt);
-  //     const start = startDate ? new Date(startDate) : null;
-  //     const end = endDate ? new Date(endDate) : null;
-
-  //     return (!start || itemDate >= start) && (!end || itemDate <= end);
-  //   });
-  // };
-
+  
   const filteredCommitments = data.completedCommitments;
   const filteredTasks = data.completedTasks;
 
@@ -54,7 +42,6 @@ export default function ReportChart({
     },
   ];
 
-  console.log(startDate.toISOString());
 
   return (
     <Card className="w-full p-4">

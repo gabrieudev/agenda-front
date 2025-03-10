@@ -121,10 +121,13 @@ export default function AdminRoleConfig({
           description: "Papel removido com sucesso",
         });
       })
-      .catch((error) =>
-        console.log(error)
-        
-      );
+      .catch(() => 
+        toast({
+          variant: "destructive",
+          title: "Erro",
+          description: "Erro ao atualizar papel",
+        })
+      )
   };
 
   return (

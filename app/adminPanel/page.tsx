@@ -9,6 +9,9 @@ import { toast } from "@/hooks/use-toast";
 import AdminRoleConfig from "@/components/adminPanel/admin-role-config";
 import AdminStatusConfig from "@/components/adminPanel/admin-status-config";
 
+import { isAuthenticatedUserAdmin } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+
 export default function SettingsPage() {
   
   const [activeTab, setActiveTab] = useState("users");
@@ -20,7 +23,27 @@ export default function SettingsPage() {
   const [searchParam, setSearchParam] = useState("");
   const [roles, setRoles] = useState<Role[]>([]);
   
+  const router = useRouter();
   
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const isAdmin = await isAuthenticatedUserAdmin();
+
+      if (!isAdmin) {
+        toast({
+          variant: "destructive",
+          title: "Permissão negada",
+          description: "Você não tem acesso a esta página.",
+        });
+
+        router.push("/");
+      router.refresh();
+      } 
+    };
+
+    checkAdmin();
+  }, [router]);
+
   useEffect(() => {
     if (activeTab === "categories") {
       api.getCategories()

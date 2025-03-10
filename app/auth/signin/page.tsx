@@ -37,8 +37,6 @@ export default function SignInPage() {
         return; 
       }
       
-      console.log( await api.getMe());
-      
       router.push("/");
       router.refresh();
     } catch (error) {

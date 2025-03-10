@@ -13,7 +13,8 @@ import {
 } from "@/components/ui/sheet";
 import { AuthStatus } from "@/components/auth-status";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { cn } from "@/lib/utils";
+import { cn, isAuthenticatedUserAdmin } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 const routes = [
   {
@@ -26,16 +27,30 @@ const routes = [
     label: "Relatórios",
     icon: Bell,
   },
-  {
-    href: "/adminPanel",
-    label: "Painel administrativo",
-    icon: Bolt
-  }
+  
 ];
+
+
 
 export function SiteHeader() {
   const pathname = usePathname();
-  
+ const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      setIsAdmin(await isAuthenticatedUserAdmin());
+    };
+
+    checkAdmin();
+  }, []);
+
+  const routes = [
+    { href: "/", label: "Dashboard", icon: Home },
+    { href: "/report", label: "Relatórios", icon: Bell },
+    ...(isAdmin ? [{ href: "/adminPanel", label: "Painel Administrativo", icon: Bolt }] : []),
+  ];
+
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
