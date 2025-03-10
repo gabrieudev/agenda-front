@@ -112,10 +112,14 @@ export default function DashboardPage() {
     }
   };
 
-  const handleComplete = async (commitment: Commitment) => {
+  const handleComplete = async (commitment: Partial<Commitment>) => {
     const completedStatus = statuses.find(
       (status) => status.name === "Concluido"
     );
+
+    delete commitment.createdAt;
+    delete commitment.updatedAt;
+
     if (!completedStatus) return;
 
     commitment.status = completedStatus;

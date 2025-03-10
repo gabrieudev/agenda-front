@@ -22,8 +22,8 @@ const routes = [
     icon: Home,
   },
   {
-    href: "/notifications",
-    label: "Notificações",
+    href: "/report",
+    label: "Relatórios",
     icon: Bell,
   },
   {

@@ -236,6 +236,14 @@ export const api = {
   deleteNotification: (notificationId: string) => 
     fetchWithAuth(`/notifications/${notificationId}`, {
       method: "DELETE"
+    }),
+
+  //Report
+
+  createReport: (reportRequestBody: ReportRequestBody) =>
+    fetchWithAuth("/users/report", {
+      method: "POST",
+      body: JSON.stringify(reportRequestBody)
     })
 
 

@@ -80,4 +80,15 @@ declare global {
     commitment: Commitment,
     dueDate: Date
   }
+
+  export interface ReportRequestBody {
+    userId: string,
+    startDate: Date,
+    endDate: Date
+  }
+
+  export interface Report {
+    completedCommitments: Commitment[],
+    completedTasks: Task[]
+  }
 }
