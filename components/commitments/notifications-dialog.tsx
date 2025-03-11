@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/lib/api";
 import { toast } from "@/hooks/use-toast";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Share2, Trash2 } from "lucide-react";
 import { Label } from "../ui/label";
+import Invite from "../notifications/invite-dialog";
 
 interface NotificationsDialogProps {
   open: boolean;
@@ -27,11 +28,23 @@ export default function NotificationsDialog({
   commitment,
   refreshNotifications,
 }: NotificationsDialogProps) {
-  const [view, setView] = useState<"list" | "edit" | "create">("list");
+  const [view, setView] = useState<"list" | "edit" | "create" | "invite">("list");
   const [selectedNotification, setSelectedNotification] =
     useState<Notification | null>(null);
   const [message, setMessage] = useState("");
   const [dueDate, setDueDate] = useState<Date | null>(null);
+  const [users, setUsers] = useState<User[] | null>(null);
+  const [usersPage, setUsersPage] = useState<number>(0)
+  const [usersPageSize, setUsersPageSize] = useState(10);
+  const [searchParam, setSearchParam] = useState("")
+  const [activeNotification, setActiveNotification] = useState<Notification | undefined>(undefined)
+  
+  useEffect(()=> {
+    api.getUsers(usersPage, usersPageSize, searchParam)
+      .then(
+        (response) => setUsers(response.content)
+      )
+  }, [usersPage, usersPageSize, searchParam, setUsers])
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,6 +116,10 @@ export default function NotificationsDialog({
     setDueDate(date);
   };
 
+  const handleSearchChange = (param: string) => {
+    setSearchParam(param)
+  }
+
   return (
     <Dialog open={open} onOpenChange={(open) => { 
       if (!open) setView("list"); 
@@ -113,8 +130,10 @@ export default function NotificationsDialog({
           <DialogTitle>
             {view === "list"
               ? "Notificações"
-              : view === "edit"
-              ? "Editar Notificação"
+              : view === "invite" 
+              ? "Convidar usuário" 
+              : view === "edit" ?
+              "Editar Notificação"
               : "Criar Notificação"}
           </DialogTitle>
         </DialogHeader>
@@ -126,6 +145,7 @@ export default function NotificationsDialog({
                   <span className="flex-1 break-words mr-2 overflow-hidden text-ellipsis">{notif.message} - {new Date(notif.dueDate).toLocaleString()}</span>
                   <div className="flex space-x-2">
                   <Button
+                    disabled={notif.isSended ? true : false}
                     size="sm"
                     variant="ghost"
                     onClick={() => {
@@ -138,11 +158,20 @@ export default function NotificationsDialog({
                   <Pencil className="w-5 h-5" />
                   </Button>
                   <Button
+                    disabled={notif.isSended ? true : false}
                     size="sm"
                     variant="ghost"
                     onClick={() => handleDelete(notif.id)}
                   >
                   <Trash2 className="w-5 h-5" />
+                  </Button>
+                  <Button
+                    disabled={notif.isSended ? true : false}
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {setActiveNotification(notif); setView("invite")}}
+                  >
+                  <Share2 className="w-5 h-5" />
                   </Button>
                 </div>
               </div>
@@ -154,7 +183,16 @@ export default function NotificationsDialog({
               Criar Notificação
             </Button>
           </div>
-        ) : (
+        ) : view === "invite" ? (
+          <Invite  
+            notification={activeNotification} 
+            onSearchChange={handleSearchChange}
+            users={users}
+          >      
+          </Invite>
+        )
+        
+        : (
           <form
             onSubmit={view === "create" ? handleCreate : handleEdit}
             className="space-y-4"

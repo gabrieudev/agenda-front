@@ -244,7 +244,36 @@ export const api = {
     fetchWithAuth("/users/report", {
       method: "POST",
       body: JSON.stringify(reportRequestBody)
-    })
+    }),
+
+  //NotificationsGuests
+
+  createNotificationInvitation: (notificationInvitation: Partial<NotificationInvitation>) =>
+    fetchWithAuth("/guest/notifications", {
+      method: "POST",
+      body: JSON.stringify(notificationInvitation)
+    }),
+  
+  getAllNotificationInvitations: (userId: string,  page: number, size: number, statusId?: string) => {
+    const params = new URLSearchParams({
+      userId: String(userId),
+      page: String(page),
+      size: String(size),
+    });
+    if (statusId) params.append("statusId", statusId);
+
+    return fetchWithAuth(`/guest/notifications?${params.toString()}`);
+  },
+
+  getNotificationInvitationById: (inviteId: string) =>
+    fetchWithAuth(`/guest/notifications/${inviteId}`, {
+      method: "GET"
+    }),
+  
+  deleteNotificationInvitation: (inviteId: string) =>
+    fetchWithAuth(`/guest/notifications/${inviteId}`, {
+      method: "DELETE"
+    }),
 
 
 };

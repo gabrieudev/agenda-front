@@ -78,7 +78,8 @@ declare global {
     id: string,
     message: string,
     commitment: Commitment,
-    dueDate: Date
+    dueDate: Date,
+    isSended: Boolean
   }
 
   export interface ReportRequestBody {
@@ -90,5 +91,12 @@ declare global {
   export interface Report {
     completedCommitments: Commitment[],
     completedTasks: Task[]
+  }
+  
+  export interface NotificationInvitation {
+    id: string,
+    status: Status
+    user: User,
+    notification: Notification
   }
 }
