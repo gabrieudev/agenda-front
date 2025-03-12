@@ -9,7 +9,7 @@ export function SiteFooter() {
     <footer className="w-full border-t bg-background">
       <div className="w-full flex h-16 items-center justify-between px-4">
         <p className="text-sm text-muted-foreground">
-          © {currentYear} João Gabriel. Todos os direitos reservados.
+          © {currentYear} Agenda Digital. Todos os direitos reservados.
         </p>
         <div className="flex items-center gap-6">
           <a
