@@ -61,12 +61,8 @@ export default function ReceivedInvitationsList() {
       api
         .getStatuses()
         .then((data) => setStatuses(data))
-        .catch(() =>
-          toast({
-            variant: "destructive",
-            title: "Erro",
-            description: "Erro ao carregar lista de status",
-          })
+        .catch((error) =>
+          console.log(error)
         );
     }
 
@@ -78,19 +74,38 @@ export default function ReceivedInvitationsList() {
   );
 
   const handleAcceptInvitation = (invitationId: string) => {
+    if (!completedStatus) {
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Status não encontrado.",
+      });
+      return;
+    }
+  
     const body: Partial<NotificationInvitation> = {
       id: invitationId,
       status: completedStatus,
     };
-
+  
     api
       .updateNotificationInvitation(body)
-      .then(() =>
+      .then(() => {
         toast({
           title: "Sucesso",
           description: "Convite aceito",
-        })
-      )
+        });
+  
+        setInvitations((prevInvitations) => {
+          if (!prevInvitations) return prevInvitations;
+  
+          return prevInvitations.map((invitation) =>
+            invitation.id === invitationId
+              ? { ...invitation, status: completedStatus } 
+              : invitation
+          );
+        });
+      })
       .catch(() =>
         toast({
           variant: "destructive",
