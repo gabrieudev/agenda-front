@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Home, Bell, Bolt } from "lucide-react";
+import { Menu, Home, Bolt, Mail, ChartColumn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -16,25 +16,9 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { cn, isAuthenticatedUserAdmin } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
-const routes = [
-  {
-    href: "/",
-    label: "Dashboard",
-    icon: Home,
-  },
-  {
-    href: "/report",
-    label: "Relatórios",
-    icon: Bell,
-  },
-  
-];
-
-
-
 export function SiteHeader() {
   const pathname = usePathname();
- const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -46,10 +30,12 @@ export function SiteHeader() {
 
   const routes = [
     { href: "/", label: "Dashboard", icon: Home },
-    { href: "/report", label: "Relatórios", icon: Bell },
-    ...(isAdmin ? [{ href: "/adminPanel", label: "Painel Administrativo", icon: Bolt }] : []),
+    { href: "/report", label: "Relatórios", icon: ChartColumn },
+    {href: "/invitations", label: "Convites", icon: Mail},
+    ...(isAdmin
+      ? [{ href: "/adminPanel", label: "Painel Administrativo", icon: Bolt }]
+      : []),
   ];
-
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

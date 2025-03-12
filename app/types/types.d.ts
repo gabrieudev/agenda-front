@@ -78,7 +78,7 @@ declare global {
     id: string,
     message: string,
     commitment: Commitment,
-    dueDate: Date,
+    dueDate: Date | string,
     isSended: Boolean
   }
 

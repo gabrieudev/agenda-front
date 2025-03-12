@@ -254,13 +254,14 @@ export const api = {
       body: JSON.stringify(notificationInvitation)
     }),
   
-  getAllNotificationInvitations: (userId: string,  page: number, size: number, statusId?: string) => {
+  getAllNotificationInvitations: (page: number, size: number, userId?: string,  statusId?: string, notificationId?: string) => {
     const params = new URLSearchParams({
-      userId: String(userId),
       page: String(page),
       size: String(size),
     });
     if (statusId) params.append("statusId", statusId);
+    if (userId) params.append("userId", userId);
+    if (notificationId) params.append("notificationId", notificationId);
 
     return fetchWithAuth(`/guest/notifications?${params.toString()}`);
   },
@@ -275,5 +276,10 @@ export const api = {
       method: "DELETE"
     }),
 
+  updateNotificationInvitation: (notificationInvitation: Partial<NotificationInvitation>) => 
+    fetchWithAuth("/guest/notifications", {
+      method: "PUT",
+      body: JSON.stringify(notificationInvitation)
+    })
 
 };

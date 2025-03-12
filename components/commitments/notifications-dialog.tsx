@@ -38,7 +38,10 @@ export default function NotificationsDialog({
   const [usersPageSize, setUsersPageSize] = useState(10);
   const [searchParam, setSearchParam] = useState("")
   const [activeNotification, setActiveNotification] = useState<Notification | undefined>(undefined)
-  
+  const [activeNotificationInvitations, setActiveNotificationInvitations] = useState<NotificationInvitation[] | undefined>(undefined)
+  const [invitationsPage, setInvitationsPage] = useState<number>(0)
+  const [invitatationsPageSize, setInvitatationsPageSize] = useState(10);
+
   useEffect(()=> {
     api.getUsers(usersPage, usersPageSize, searchParam)
       .then(
@@ -46,11 +49,25 @@ export default function NotificationsDialog({
       )
   }, [usersPage, usersPageSize, searchParam, setUsers])
 
+  useEffect(() => {
+    if (activeNotification) {
+      console.log("teste");
+      
+      api.getAllNotificationInvitations(invitationsPage, invitatationsPageSize, undefined, undefined, activeNotification.id)
+        .then(
+          (response) => setActiveNotificationInvitations(response.content)
+        )
+    }
+  }, [activeNotification, invitationsPage, invitatationsPageSize, setActiveNotificationInvitations])
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!commitment || !dueDate) return;
+
+    const adjustedDueDate = new Date(dueDate.getTime() - dueDate.getTimezoneOffset() * 60000).toISOString()
+    
     await api
-      .createNotification({ message, dueDate: dueDate, commitment })
+      .createNotification({ message, dueDate: adjustedDueDate, commitment })
       .then(() =>
         toast({
           title: "Sucesso",
@@ -73,8 +90,11 @@ export default function NotificationsDialog({
   const handleEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedNotification || !dueDate) return;
+    
+    const adjustedDueDate = new Date(dueDate.getTime() - dueDate.getTimezoneOffset() * 60000).toISOString()
+   
     await api
-      .updateNotification({ ...selectedNotification, message, dueDate })
+      .updateNotification({ ...selectedNotification, message, dueDate: adjustedDueDate })
       .then(() =>
         toast({
           title: "Sucesso",
@@ -120,6 +140,21 @@ export default function NotificationsDialog({
     setSearchParam(param)
   }
 
+  const handleRefreshInvitations = () => {
+    if (activeNotification) {
+      api
+        .getAllNotificationInvitations(invitationsPage, invitatationsPageSize, undefined, undefined, activeNotification.id)
+        .then((response) => setActiveNotificationInvitations(response.content))
+        .catch(() =>
+          toast({
+            variant: "destructive",
+            title: "Erro",
+            description: "Erro ao atualizar convites",
+          })
+        );
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={(open) => { 
       if (!open) setView("list"); 
@@ -131,7 +166,7 @@ export default function NotificationsDialog({
             {view === "list"
               ? "Notificações"
               : view === "invite" 
-              ? "Convidar usuário" 
+              ? "Convites" 
               : view === "edit" ?
               "Editar Notificação"
               : "Criar Notificação"}
@@ -145,7 +180,7 @@ export default function NotificationsDialog({
                   <span className="flex-1 break-words mr-2 overflow-hidden text-ellipsis">{notif.message} - {new Date(notif.dueDate).toLocaleString()}</span>
                   <div className="flex space-x-2">
                   <Button
-                    disabled={notif.isSended ? true : false}
+                    
                     size="sm"
                     variant="ghost"
                     onClick={() => {
@@ -158,7 +193,7 @@ export default function NotificationsDialog({
                   <Pencil className="w-5 h-5" />
                   </Button>
                   <Button
-                    disabled={notif.isSended ? true : false}
+                    
                     size="sm"
                     variant="ghost"
                     onClick={() => handleDelete(notif.id)}
@@ -166,7 +201,7 @@ export default function NotificationsDialog({
                   <Trash2 className="w-5 h-5" />
                   </Button>
                   <Button
-                    disabled={notif.isSended ? true : false}
+                    
                     size="sm"
                     variant="ghost"
                     onClick={() => {setActiveNotification(notif); setView("invite")}}
@@ -188,6 +223,8 @@ export default function NotificationsDialog({
             notification={activeNotification} 
             onSearchChange={handleSearchChange}
             users={users}
+            invitations={activeNotificationInvitations}
+            onRefreshInvitations={handleRefreshInvitations}
           >      
           </Invite>
         )
@@ -207,7 +244,7 @@ export default function NotificationsDialog({
             <Input
               type="datetime-local"
               value={
-                dueDate ? new Date(dueDate).toISOString().slice(0, 16) : ""
+                dueDate ? new Date(dueDate.getTime() - dueDate.getTimezoneOffset() * 60000 ).toISOString().slice(0, 16) : ""
               }
               onChange={handleDueDateChange}
               placeholder="Data de vencimento"
