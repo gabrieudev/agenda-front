@@ -140,6 +140,11 @@ export const api = {
       body: JSON.stringify(data),
     }),
 
+  resendEmail: (userId: string) =>
+    fetchWithAuth(`/users/${userId}/email-confirmation`, {
+      method: "POST"
+    }),
+
   // Status
   getStatuses: () => fetchWithAuth("/statuses"),
 

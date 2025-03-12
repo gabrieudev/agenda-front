@@ -8,7 +8,7 @@ import { authService } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { isAuthenticatedUserActive } from "@/lib/utils";
+import { getAuthenticatedUser } from "@/lib/utils";
 import { api } from "@/lib/api";
 
 export default function SignInPage() {
@@ -19,24 +19,22 @@ export default function SignInPage() {
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsLoading(true);
-  
+
     try {
       const formData = new FormData(event.currentTarget);
       await authService.signIn({
         email: formData.get("email") as string,
         password: formData.get("password") as string,
       });
-  
-      if (!await isAuthenticatedUserActive()) {
-        await authService.signOut(); 
-        toast({
-          variant: "destructive",
-          title: "Erro",
-          description: "Email não confirmado"
-        });
-        return; 
+
+      const user = await getAuthenticatedUser();
+
+      if (!user.isActive) {
+        router.push(`/auth/resend_email/${user.id}`);
+        await authService.signOut();
+        return;
       }
-      
+
       router.push("/");
       router.refresh();
     } catch (error) {

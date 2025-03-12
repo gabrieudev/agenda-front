@@ -192,7 +192,11 @@ export default function ReceivedInvitationsList() {
                           variant="ghost"
                           size="sm"
                           color="green"
-                          disabled={invitation.status.name === "Concluido" ? true : false}
+                          disabled={
+                            invitation.status.name === "Concluido"
+                              ? true
+                              : false
+                          }
                           onClick={() => handleAcceptInvitation(invitation.id)}
                         >
                           Aceitar
