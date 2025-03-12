@@ -7,7 +7,7 @@ export function SiteFooter() {
 
   return (
     <footer className="w-full border-t bg-background">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="w-full flex h-16 items-center justify-between px-4">
         <p className="text-sm text-muted-foreground">
           © {currentYear} João Gabriel. Todos os direitos reservados.
         </p>

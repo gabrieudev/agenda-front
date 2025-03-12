@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/lib/api";
 import { toast } from "@/hooks/use-toast";
-import { Pencil, Share2, Trash2 } from "lucide-react";
+import { MoveLeft, Pencil, Share2, Trash2 } from "lucide-react";
 import { Label } from "../ui/label";
 import Invite from "../notifications/invite-dialog";
 
@@ -193,7 +193,19 @@ export default function NotificationsDialog({
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="flex items-center">
+            {view == "invite" && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => {
+                  setView("list");
+                }}
+                className="mr-2" 
+              >
+                <MoveLeft className="w-5 h-5" />
+              </Button>
+            )}
             {view === "list"
               ? "Notificações"
               : view === "invite"
