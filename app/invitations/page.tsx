@@ -61,19 +61,17 @@ export default function ReceivedInvitationsList() {
       api
         .getStatuses()
         .then((data) => setStatuses(data))
-        .catch((error) =>
-          console.log(error)
-        );
+        .catch((error) => console.log(error));
     }
 
     fetchStatuses();
   }, [setStatuses]);
 
-  let completedStatus: Status | undefined = statuses?.find(
-    (status) => status.name === "Concluido"
-  );
-
   const handleAcceptInvitation = (invitationId: string) => {
+    const completedStatus = statuses?.find(
+      (status) => status.name === "Concluido"
+    );
+
     if (!completedStatus) {
       toast({
         variant: "destructive",
@@ -82,12 +80,12 @@ export default function ReceivedInvitationsList() {
       });
       return;
     }
-  
+
     const body: Partial<NotificationInvitation> = {
       id: invitationId,
       status: completedStatus,
     };
-  
+
     api
       .updateNotificationInvitation(body)
       .then(() => {
@@ -95,13 +93,16 @@ export default function ReceivedInvitationsList() {
           title: "Sucesso",
           description: "Convite aceito",
         });
-  
+
         setInvitations((prevInvitations) => {
           if (!prevInvitations) return prevInvitations;
-  
+
           return prevInvitations.map((invitation) =>
             invitation.id === invitationId
-              ? { ...invitation, status: completedStatus } 
+              ? {
+                  ...invitation,
+                  status: completedStatus,
+                }
               : invitation
           );
         });
